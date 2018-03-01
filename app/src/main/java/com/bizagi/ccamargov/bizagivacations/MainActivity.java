@@ -32,9 +32,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bizagi.ccamargov.bizagivacations.model.NavItem;
+import com.bizagi.ccamargov.bizagivacations.sync.SyncAdapter;
 import com.bizagi.ccamargov.bizagivacations.utilities.Constants;
 import com.bizagi.ccamargov.bizagivacations.utilities.NavListAdapter;
 import com.bizagi.ccamargov.bizagivacations.utilities.NetworkUtilities;
+
+import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -69,8 +72,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                             .equals(Constants.VALUE_FROM_LOGIN_TO_HOME) &&
                     NetworkUtilities.isNetworkAvailable(oContext)) {
                 if (!ContentResolver.getMasterSyncAutomatically()) {
+                    SyncAdapter.syncNow(this, Constants.DOWNLOAD_AND_UPLOAD_ALL_RECORDS_SYNC);
                 }
             }
+            JodaTimeAndroid.init(this);
             oUserAccount = oAvailableAccounts[0];
             setLocale();
             setContentView(R.layout.activity_main);
@@ -197,12 +202,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                     @Override
                     public void onClick(View v) {
                         TextView oSubtitle = oNavList.getChildAt
-                                (oNavList.getFirstVisiblePosition() + 2)
+                                (oNavList.getFirstVisiblePosition())
                                 .findViewById(R.id.sub_title_nav_item);
                         Spinner oLangSpinner = oFinalLangAlertDialog.
                                 findViewById(R.id.dropdown_lang);
                         NavItem oItemLang = (NavItem) oLangSpinner.getSelectedItem();
-                        NavItem oCurrentItem = (NavItem) oNavList.getAdapter().getItem(2);
+                        NavItem oCurrentItem = (NavItem) oNavList.getAdapter().getItem(0);
                         oSubtitle.setText(oItemLang.getSubtitle());
                         oCurrentItem.setSubtitle(oItemLang.getSubtitle());
                         changeLang(oItemLang.getSubtitle().toLowerCase());
@@ -356,12 +361,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
     private void setSyncSubtitleNavItem(String sSubtitleSync) {
         if (oNavList.getChildCount() > 0) {
-//            TextView oSubtitleSync = oNavList.getChildAt
-//                    (oNavList.getFirstVisiblePosition() + 3)
-//                    .findViewById(R.id.sub_title_nav_item);
-//            NavItem oSyncItem = (NavItem) oNavList.getAdapter().getItem(3);
-//            oSubtitleSync.setText(sSubtitleSync);
-//            oSyncItem.setSubtitle(sSubtitleSync);
+            TextView oSubtitleSync = oNavList.getChildAt
+                    (oNavList.getFirstVisiblePosition() + 1)
+                    .findViewById(R.id.sub_title_nav_item);
+            NavItem oSyncItem = (NavItem) oNavList.getAdapter().getItem(1);
+            oSubtitleSync.setText(sSubtitleSync);
+            oSyncItem.setSubtitle(sSubtitleSync);
         }
     }
 
@@ -392,6 +397,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     private void syncAllDataManual() {
         if (NetworkUtilities.isNetworkAvailable(oContext)) {
             showSyncProcessDialog();
+            SyncAdapter.syncNow(this, Constants.DOWNLOAD_AND_UPLOAD_ALL_RECORDS_SYNC);
         } else {
             showAlertDialog(Constants.ALERT_DANGER,
                     getResources().getString(R.string.no_net_to_login_sync));

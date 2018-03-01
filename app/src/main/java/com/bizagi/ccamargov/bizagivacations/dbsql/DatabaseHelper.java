@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
+
+import com.bizagi.ccamargov.bizagivacations.provider.ContractModel;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -29,14 +32,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void createTables(SQLiteDatabase database) {
         String sQuery;
-        sQuery = "";
+        sQuery = "CREATE TABLE " + ContractModel.ROUT_REQUEST_VACATIONS + " (" +
+                BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ContractModel.RequestVacation.PROCESS + " TEXT, " +
+                ContractModel.RequestVacation.ACTIVITY + " TEXT, " +
+                ContractModel.RequestVacation.REQUEST_DATE + " TEXT, " +
+                ContractModel.RequestVacation.EMPLOYEE + " TEXT, " +
+                ContractModel.RequestVacation.BEGIN_DATE + " TEXT, " +
+                ContractModel.RequestVacation.END_DATE + " TEXT, " +
+                ContractModel.RequestVacation.LAST_VACATION_ON + " TEXT, " +
+                ContractModel.RequestVacation.IS_APPROVED + " INTEGER, " +
+                ContractModel.RequestVacation.REMOTE_ID + " INTEGER UNIQUE)";
         database.execSQL(sQuery);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         try {
-            db.execSQL("");
+            db.execSQL("DROP TABLE " + ContractModel.ROUT_REQUEST_VACATIONS);
         } catch (SQLiteException ignored) {
         }
         onCreate(db);

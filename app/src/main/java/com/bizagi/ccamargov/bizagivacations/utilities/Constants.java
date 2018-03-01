@@ -16,6 +16,9 @@ public class Constants {
     public static final String DEFAULT_LANG_PREF = "TimeAndAttendancePrefs";
     public static final String DEFAULT_LANG_KEY = "Lang";
 
+    public static final String TYPE_SYNC = "type_sync";
+    public static final int DOWNLOAD_AND_UPLOAD_ALL_RECORDS_SYNC = 0;
+
     public static final String PARAM_USERNAME = "email";
     static final String PARAM_PASSWORD = "password";
     public static final String PARAM_AUTHTOKEN_TYPE = "authTokenType";
@@ -24,11 +27,16 @@ public class Constants {
     public static final String PARAM_LAST_SYNC = "last_sync";
     public static final String PARAM_FULL_NAME = "user_full_name";
     private static final String IP_HOST_SERVER = "http://204.232.187.235:9082";
-    static final String LOGIN_SERVER_URL
+    public static final String LOGIN_SERVER_URL
             = IP_HOST_SERVER + "/api/v1/users/login_user.json";
+    public static final String GET_REQUEST_VACATIONS_URL
+            = IP_HOST_SERVER + "/api/v1/request_vacations/get_all_requests.json";
     public static final String ERRORS = "errors";
     static final int REGISTRATION_TIMEOUT = 30 * 1000;
     public static final int POLL_FREQUENCY = 3600;
+
+    public static final int VALUE_HTTP_OK = 200;
+    public static final int VALUE_WRONG_API_KEY = 3;
 
     public static final String PARAM_FROM_TO = "go_to_from";
     public static final String VALUE_FROM_LOGIN_TO_HOME = "login_to_activity";

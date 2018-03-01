@@ -35,6 +35,14 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name=".provider.ProviderModel"
+            android:authorities="com.bizagi.ccamargov.bizagivacations"
+            android:enabled="true"
+            android:exported="true"
+            android:syncable="true"
+            tools:ignore="ExportedContentProvider" />
+
         <service android:name=".sync.AuthenticationService"
             tools:ignore="ExportedService">
             <intent-filter>
@@ -43,6 +51,19 @@
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
+        </service>
+
+        <service
+            android:name=".sync.SyncService"
+            android:exported="true"
+            android:process=":sync"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter" />
         </service>
 
     </application>

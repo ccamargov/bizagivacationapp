@@ -14,6 +14,7 @@
     <string name="app_name">Bizagi Vacations</string>
     <string name="label_auth_token">BizagiVacations</string>
     <string name="provider_authority">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="account_type">com.bizagi.ccamargov.bizagivacations</string>
     <string name="signature">Developed By Camilo Camargo</string>
     <string name="fa_list_check">&#xf046;</string>
     <string name="fa_language">&#xf1ab;</string>
@@ -48,5 +49,5 @@
     <string name="ask_exit_text">Are you sure you want to exit?</string>
     <string name="img_description_action">Action</string>
     <string name="ask_logout_text">Are you sure you want to log out?</string>
-    <string name="no_net_to_login_sync">Could not sync, check your internet connection</string>
+
 </resources>

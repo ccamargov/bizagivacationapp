@@ -14,6 +14,7 @@
     <string name="app_name">Bizagi Vacations</string>
     <string name="label_auth_token">BizagiVacations</string>
     <string name="provider_authority">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="account_type">com.bizagi.ccamargov.bizagivacations</string>
     <string name="signature">Desarrollado por Camilo Camargo</string>
     <string name="fa_list_check">&#xf046;</string>
     <string name="fa_language">&#xf1ab;</string>
