@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFA726</color>
-    <color name="colorPrimaryDark">#FF9800</color>
-    <color name="colorPrimaryLight">#FFF3E0</color>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorPrimaryLight">#E3F2FD</color>
     <color name="colorTextPrimary">#424242</color>
     <color name="colorSecondary">#36454F</color>
     <color name="colorApplicationBackground">#ECEFF1</color>
+    <color name="colorDialogButtonPrimary">#FFFFFF</color>
+    <color name="colorDialogButtonSecondary">#FFFFFF</color>
+    <color name="colorMenuNavIcon">#616161</color>
+    <color name="colorMenuNavTitle">#616161</color>
+    <color name="colorMenuNavSubTitle">#828282</color>
+    <color name="colorAlertSuccess">#00C851</color>
+    <color name="colorAlertWarning">#ffbb33</color>
+    <color name="colorAlertDanger">#ff4444</color>
+    <color name="colorAlertInfo">#33b5e5</color>
 </resources>
