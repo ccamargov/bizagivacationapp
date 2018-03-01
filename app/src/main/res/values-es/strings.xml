@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="required_field">Campo requerido</string>
+    <string name="invalid_email">Correo inválido</string>
+    <string name="ui_activity_authenticating">Autenticando&#8230;</string>
+    <string name="login_invalid_data">Email o contraseña incorrectos</string>
+    <string name="login_no_internet_detected">Debes estar conectado para iniciar sesión</string>
+    <string name="login_server_problem">Ha ocurrido un problema durante la autenticación con el servidor. Porfavor contacte con el administrador.</string>
+    <string name="no_synced">No sincronizado</string>
+    <string name="app_name">Bizagi Vacations</string>
+    <string name="label_auth_token">BizagiVacations</string>
+    <string name="provider_authority">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="fa_list_check">&#xf046;</string>
+</resources>

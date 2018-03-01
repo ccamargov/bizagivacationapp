@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="required_field">Required field</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="ui_activity_authenticating">Authenticating&#8230;</string>
+    <string name="login_invalid_data">Email o contraseña incorrectos</string>
+    <string name="login_no_internet_detected">You must be connected to internet to sign in</string>
+    <string name="login_server_problem">A problem has occurred during authentication with the server. Contact your system administrator.</string>
+    <string name="no_synced">No synchronized</string>
+    <string name="app_name">Bizagi Vacations</string>
+    <string name="label_auth_token">BizagiVacations</string>
+    <string name="provider_authority">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="fa_list_check">&#xf046;</string>
+</resources>
