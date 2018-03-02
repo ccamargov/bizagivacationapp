@@ -23,10 +23,10 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bizagi.ccamargov.bizagivacations.model.RequestVacation;
 import com.bizagi.ccamargov.bizagivacations.provider.ContractModel;
 import com.bizagi.ccamargov.bizagivacations.sync.SyncAdapter;
 import com.bizagi.ccamargov.bizagivacations.utilities.Constants;
@@ -120,6 +120,7 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
 
     @Override
     public void onClick(RequestListAdapter.ViewHolder holder, int idLine) {
+        restartDialogRequestElements();
         oRequestAdapter.getCursor().moveToPosition(idLine);
         Cursor oCursor = oRequestAdapter.getCursor();
         iCurrentRequestRemoteId = oCursor
@@ -132,7 +133,6 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
         TextView oEndDate = oDialogViewRequest.findViewById(R.id.end_date);
         TextView oLastVacationDate = oDialogViewRequest.findViewById(R.id.last_vacation_date);
         TextView oApproved = oDialogViewRequest.findViewById(R.id.request_status);
-        Button oConfirmButton = oDialogViewRequest.findViewById(R.id.dialog_request_confirm);
         oEmployee.setText(oCursor
                 .getString(oCursor.getColumnIndex(ContractModel.RequestVacation.EMPLOYEE)));
         oProcess.setText(oCursor
@@ -147,16 +147,17 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
                 .getString(oCursor.getColumnIndex(ContractModel.RequestVacation.END_DATE)));
         oLastVacationDate.setText(oCursor
                 .getString(oCursor.getColumnIndex(ContractModel.RequestVacation.LAST_VACATION_ON)));
-        boolean bIsApproved = oCursor
-                .getInt(oCursor.getColumnIndex(ContractModel.RequestVacation.IS_APPROVED)) > 0;
-        if (bIsApproved) {
+        int iRequestState = oCursor
+                .getInt(oCursor.getColumnIndex(ContractModel.RequestVacation.REQUEST_STATUS));
+        if (iRequestState == RequestVacation.PENDING_REQUEST) {
+            oApproved.setTextColor(getResources().getColor(R.color.colorAlertWarning));
+            oApproved.setText(getResources().getString(R.string.pending));
+        } else if (iRequestState == RequestVacation.APPROVED_REQUEST) {
             oApproved.setTextColor(getResources().getColor(R.color.colorAlertSuccess));
             oApproved.setText(getResources().getString(R.string.approved));
-            oConfirmButton.setText(getResources().getString(R.string.approved));
-            oConfirmButton.setEnabled(false);
         } else {
             oApproved.setTextColor(getResources().getColor(R.color.colorAlertDanger));
-            oApproved.setText(getResources().getString(R.string.not_approved));
+            oApproved.setText(getResources().getString(R.string.rejected));
         }
         oAlertDialogRequest.show();
     }
@@ -172,8 +173,8 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
         TextView oTitleDialogRequest = oDialogViewRequest.findViewById(R.id.dialog_title_request);
         Button oButtonConfirmDialog
                 = oDialogViewRequest.findViewById(R.id.dialog_request_confirm);
-        Button oButtonCancelDialog
-                = oDialogViewRequest.findViewById(R.id.dialog_request_cancel);
+        Button oButtonRejectDialog
+                = oDialogViewRequest.findViewById(R.id.dialog_request_reject);
         oTitleDialogRequest.setTypeface(fontAwesomeFont);
         oTitleDialogRequest.setText(sTextRequestTitle);
         oAlertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -185,25 +186,30 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
             public void onClick(View v) {
                 if (iCurrentRequestRemoteId != -1) {
                     ContentValues oValues = new ContentValues();
-                    oValues.put(ContractModel.RequestVacation.IS_APPROVED, Constants.INTEGER_VALUE_TRUE);
+                    oValues.put(ContractModel.RequestVacation.REQUEST_STATUS, RequestVacation.APPROVED_REQUEST);
                     getActivity().getContentResolver()
                             .update(ContractModel.RequestVacation.CONTENT_URI, oValues,
                                     ContractModel.RequestVacation.REMOTE_ID + " = ?",
                                     new String[] {String.valueOf(iCurrentRequestRemoteId)});
                     oFinalRequestAlterDialog.dismiss();
-                    restartDialogRequestElements();
                 }
             }
 
         });
-        oButtonCancelDialog.setOnClickListener(new View.OnClickListener() {
+        oButtonRejectDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                oFinalRequestAlterDialog.dismiss();
-                restartDialogRequestElements();
+                if (iCurrentRequestRemoteId != -1) {
+                    ContentValues oValues = new ContentValues();
+                    oValues.put(ContractModel.RequestVacation.REQUEST_STATUS, RequestVacation.REJECTED_REQUEST);
+                    getActivity().getContentResolver()
+                            .update(ContractModel.RequestVacation.CONTENT_URI, oValues,
+                                    ContractModel.RequestVacation.REMOTE_ID + " = ?",
+                                    new String[] {String.valueOf(iCurrentRequestRemoteId)});
+                    oFinalRequestAlterDialog.dismiss();
+                }
             }
         });
-        oAlertDialogRequest.setCanceledOnTouchOutside(false);
     }
 
     private void restartDialogRequestElements() {
@@ -215,9 +221,6 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
         TextView oEndDate = oDialogViewRequest.findViewById(R.id.end_date);
         TextView oLastVacationDate = oDialogViewRequest.findViewById(R.id.last_vacation_date);
         TextView oApproved = oDialogViewRequest.findViewById(R.id.request_status);
-        Button oConfirmButton = oDialogViewRequest.findViewById(R.id.dialog_request_confirm);
-        oConfirmButton.setText(getResources().getString(R.string.action_approve));
-        oConfirmButton.setEnabled(true);
         oEmployee.setText("");
         oProcess.setText("");
         oActivity.setText("");

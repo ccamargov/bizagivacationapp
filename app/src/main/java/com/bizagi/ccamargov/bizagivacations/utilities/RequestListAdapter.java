@@ -75,12 +75,16 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
                 oRequestData.getString(oRequestData.getColumnIndex(ContractModel.RequestVacation.EMPLOYEE)),
                 oRequestData.getString(oRequestData.getColumnIndex(ContractModel.RequestVacation.BEGIN_DATE)),
                 oRequestData.getString(oRequestData.getColumnIndex(ContractModel.RequestVacation.END_DATE)),
-                oRequestData.getInt(oRequestData.getColumnIndex(ContractModel.RequestVacation.IS_APPROVED)) > 0
+                oRequestData.getInt(oRequestData.getColumnIndex(ContractModel.RequestVacation.REQUEST_STATUS))
         );
         holder.oTxtEmployeeName.setText(oRequest.getEmployee());
         holder.oTxtRangeRequest.setText(oRequest.getRangeRequest());
         holder.oTxtNumDaysRange.setText(oRequest.getDaysBetweenRequest());
-        if (oRequest.isApproved()) {
+        if (oRequest.getStatusRequest() == RequestVacation.PENDING_REQUEST) {
+            iColorStatus = ContextCompat.getColor(oContext,
+                    R.color.colorAlertWarning);
+            holder.oMarkImageApproved.setVisibility(View.GONE);
+        } else if (oRequest.getStatusRequest() == RequestVacation.APPROVED_REQUEST) {
             iColorStatus = ContextCompat.getColor(oContext,
                     R.color.colorAlertSuccess);
             holder.oMarkImageApproved.setVisibility(View.VISIBLE);

@@ -48,6 +48,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_approve">Approve</string>
+    <string name="action_reject">Reject</string>
     <string name="ask_exit_text">Are you sure you want to exit?</string>
     <string name="img_description_action">Action</string>
     <string name="ask_logout_text">Are you sure you want to log out?</string>
@@ -68,5 +69,6 @@
     <string name="last_vacation_date_label">Last vacation taken in:</string>
     <string name="request_status_label">Request status:</string>
     <string name="approved">Approved</string>
-    <string name="not_approved">Pending</string>
+    <string name="pending">Pending</string>
+    <string name="rejected">Rejected</string>
 </resources>

@@ -24,7 +24,7 @@ public class ContractModel {
         String BEGIN_DATE = "begin_date";
         String END_DATE = "end_date";
         String LAST_VACATION_ON = "last_vacation_on";
-        String IS_APPROVED = "approved";
+        String REQUEST_STATUS = "approved";
         String REMOTE_ID = "id_remote";
     }
 

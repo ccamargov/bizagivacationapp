@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ContractModel.RequestVacation.BEGIN_DATE + " TEXT, " +
                 ContractModel.RequestVacation.END_DATE + " TEXT, " +
                 ContractModel.RequestVacation.LAST_VACATION_ON + " TEXT, " +
-                ContractModel.RequestVacation.IS_APPROVED + " INTEGER, " +
+                ContractModel.RequestVacation.REQUEST_STATUS + " INTEGER, " +
                 ContractModel.RequestVacation.REMOTE_ID + " INTEGER UNIQUE)";
         database.execSQL(sQuery);
     }

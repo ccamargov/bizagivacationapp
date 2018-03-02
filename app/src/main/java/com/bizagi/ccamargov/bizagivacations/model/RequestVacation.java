@@ -11,6 +11,10 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class RequestVacation {
 
+    public static final int PENDING_REQUEST = 0;
+    public static final int APPROVED_REQUEST = 1;
+    public static final int REJECTED_REQUEST = 2;
+
     private int id;
     private String process;
     private String activity;
@@ -19,10 +23,10 @@ public class RequestVacation {
     private String begin_date;
     private String end_date;
     private String last_vacation_on;
-    private boolean approved;
+    private int approved;
     private Context context;
 
-    public RequestVacation(int id, String process, String activity, String request_date, String employee, String begin_date, String end_date, String last_vacation_on, boolean approved) {
+    public RequestVacation(int id, String process, String activity, String request_date, String employee, String begin_date, String end_date, String last_vacation_on, int approved) {
         this.id = id;
         this.process = process;
         this.activity = activity;
@@ -34,7 +38,7 @@ public class RequestVacation {
         this.approved = approved;
     }
 
-    public RequestVacation(Context context, int id, String employee, String begin_date, String end_date, boolean approved) {
+    public RequestVacation(Context context, int id, String employee, String begin_date, String end_date, int approved) {
         this.id = id;
         this.employee = employee;
         this.begin_date = begin_date;
@@ -107,11 +111,11 @@ public class RequestVacation {
         this.last_vacation_on = last_vacation_on;
     }
 
-    public boolean isApproved() {
+    public int getStatusRequest() {
         return approved;
     }
 
-    public void setApproved(boolean approved) {
+    public void setStatusRequest(int approved) {
         this.approved = approved;
     }
 

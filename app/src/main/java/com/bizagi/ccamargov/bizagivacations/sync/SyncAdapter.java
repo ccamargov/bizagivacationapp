@@ -2,7 +2,6 @@ package com.bizagi.ccamargov.bizagivacations.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.NotificationManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
@@ -38,11 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -76,7 +72,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             ContractModel.RequestVacation.BEGIN_DATE,
             ContractModel.RequestVacation.END_DATE,
             ContractModel.RequestVacation.LAST_VACATION_ON,
-            ContractModel.RequestVacation.IS_APPROVED
+            ContractModel.RequestVacation.REQUEST_STATUS
     };
 
     private static final int REQUEST_VACATION_REMOTE_ID = 1;
@@ -214,7 +210,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             String sBeginDate;
             String sEndDate;
             String sLastVacationOn;
-            boolean isApproved;
+            int isApproved;
             while (oCursor.moveToNext()) {
                 syncResult.stats.numEntries++;
                 iRemoteEmpId = oCursor.getString(REQUEST_VACATION_REMOTE_ID);
@@ -225,7 +221,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 sBeginDate = oCursor.getString(REQUEST_VACATION_BEGIN_DATE);
                 sEndDate = oCursor.getString(REQUEST_VACATION_END_DATE);
                 sLastVacationOn = oCursor.getString(REQUEST_VACATION_LAST_VACATION_ON);
-                isApproved = oCursor.getInt(REQUEST_VACATION_IS_APPROVED) > 0;
+                isApproved = oCursor.getInt(REQUEST_VACATION_IS_APPROVED);
                 RequestVacation match = expenseMap.get(iRemoteEmpId);
                 if (match != null) {
                     expenseMap.remove(iRemoteEmpId);
@@ -245,7 +241,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             !match.getEndDate().equals(sEndDate);
                     boolean bCheckLV = match.getlastVacationOn() != null &&
                             !match.getlastVacationOn().equals(sLastVacationOn);
-                    boolean bCheckIA = match.isApproved() != isApproved;
+                    boolean bCheckIA = match.getStatusRequest() != isApproved;
                     if (bCheckPR || bCheckAC || bCheckRD || bCheckEM || bCheckBD
                             || bCheckED || bCheckLV || bCheckIA) {
                         Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, Scheduling update for => " + existingUri);
@@ -264,8 +260,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                         match.getEndDate())
                                 .withValue(ContractModel.RequestVacation.LAST_VACATION_ON,
                                         match.getlastVacationOn())
-                                .withValue(ContractModel.RequestVacation.IS_APPROVED,
-                                        match.isApproved())
+                                .withValue(ContractModel.RequestVacation.REQUEST_STATUS,
+                                        match.getStatusRequest())
                                 .build());
                         syncResult.stats.numUpdates++;
                     } else {
@@ -300,8 +296,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             e.getEndDate())
                     .withValue(ContractModel.RequestVacation.LAST_VACATION_ON,
                             e.getlastVacationOn())
-                    .withValue(ContractModel.RequestVacation.IS_APPROVED,
-                            e.isApproved())
+                    .withValue(ContractModel.RequestVacation.REQUEST_STATUS,
+                            e.getStatusRequest())
                     .build());
             syncResult.stats.numInserts++;
         }

@@ -38,8 +38,6 @@ public class Constants {
     public static final int VALUE_HTTP_OK = 200;
     public static final int VALUE_WRONG_API_KEY = 3;
 
-    public static final int INTEGER_VALUE_TRUE = 1;
-
     public static final String PARAM_FROM_TO = "go_to_from";
     public static final String VALUE_FROM_LOGIN_TO_HOME = "login_to_activity";
 

@@ -198,12 +198,13 @@
         style="?android:attr/buttonBarStyle" >
 
         <Button
-            android:id="@+id/dialog_request_cancel"
+            android:id="@+id/dialog_request_reject"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
-            android:text="@string/action_cancel"
+            android:textColor="@color/colorAlertDanger"
+            android:text="@string/action_reject"
             style="?android:attr/buttonBarButtonStyle" />
 
         <Button
