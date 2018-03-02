@@ -13,6 +13,14 @@ import com.bizagi.ccamargov.bizagivacations.R;
 
 import java.util.ArrayList;
 
+/**
+ * Utility class. Custom adapter to show the list of options included in the NavigationViewDrawer
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class NavListAdapter extends BaseAdapter {
 
     private Context oContext;
@@ -38,6 +46,9 @@ public class NavListAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Get custom view to each item
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View oView;

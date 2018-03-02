@@ -3,8 +3,6 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="20dp"
-    android:paddingRight="10dp"
     android:paddingStart="20dp"
     android:paddingEnd="10dp"
     android:paddingTop="10dp"
@@ -29,7 +27,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_marginLeft="25dp"
         android:layout_marginStart="25dp"
         android:orientation="vertical">
 
@@ -46,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/colorMenuNavSubTitle"/>

@@ -42,6 +42,15 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * Main Activity. This activity manages all the processes included in the fragments of the application.
+ * It is responsible for configuring the NavigationViewDrawer, custom alert messages, logoff, and fragment exchange.
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener {
 
     private ListView oNavList;
@@ -130,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         fragmentTransaction.replace(R.id.main_layout_container, oMainFragment);
         fragmentTransaction.commit();
     }
-
+    // Manage the successful result of synchronization
     private BroadcastReceiver synFinishedWithErrors = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -140,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                     Toast.LENGTH_SHORT).show();
         }
     };
-
+    // Manage the error result of synchronization
     private BroadcastReceiver syncInOrderFinished = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -338,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         bundle.putString(Constants.ALERT_DIALOG_MESSAGE_KEY, message);
         showDialog(DIALOG_ALERT, bundle);
     }
-
+    // Change favorite language application
     private void changeLang(String sCodeLang) {
         SharedPreferences.Editor editor = getSharedPreferences(Constants.DEFAULT_LANG_PREF,
                 MODE_PRIVATE).edit();
@@ -358,14 +367,14 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                     .getLanguage()));
         }
     }
-
+    // Close session and remove account
     private void logOut() {
         oAccountManager.removeAccount(oUserAccount, null, null);
         finish();
         Intent oIntent = new Intent(oContext, LoginActivity.class);
         startActivity(oIntent);
     }
-
+    // Update the DateTime information of the last success synchronization
     private void setSyncSubtitleNavItem(String sSubtitleSync) {
         if (oNavList.getChildCount() > 0) {
             TextView oSubtitleSync = oNavList.getChildAt
@@ -400,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     public void showSyncProcessDialog() {
         createProcessDialog(getString(R.string.syncing)).show();
     }
-
+    // Synchronize all information manually
     private void syncAllDataManual() {
         if (NetworkUtilities.isNetworkAvailable(oContext)) {
             showSyncProcessDialog();

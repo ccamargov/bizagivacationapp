@@ -14,15 +14,27 @@ import android.text.TextUtils;
 
 import com.bizagi.ccamargov.bizagivacations.dbsql.DatabaseHelper;
 
+/**
+ * Class used to handle all transactions to the local database,
+ * requested by external applications or services.
+ * This class is essential for the synchronization service.
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class ProviderModel extends ContentProvider {
 
     private ContentResolver oResolver;
     private DatabaseHelper oDatabaseHelper;
-
+    // uriMatcher is used to decode URIS
     private static final UriMatcher uriMatcher;
+    // Uri to get all request vacations
     private static final int ID_URI_REQUEST_VACATIONS = 10;
+    // Uri to get a single request vacation
     private static final int ID_URI_REQUEST_VACATION_ID = 15;
-
+    // Related Uris to RequestVacation are added to be decoded in the provider's methods.
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(ContractModel.AUTHORITY, ContractModel.ROUT_REQUEST_VACATIONS,
@@ -30,14 +42,14 @@ public class ProviderModel extends ContentProvider {
         uriMatcher.addURI(ContractModel.AUTHORITY, ContractModel.ROUT_REQUEST_VACATIONS + "/#",
                 ID_URI_REQUEST_VACATION_ID);
     }
-
+    // Get database manager instance and provides applications access to the content model.
     @Override
     public boolean onCreate() {
         oDatabaseHelper = new DatabaseHelper(getContext());
         oResolver = getContext().getContentResolver();
         return true;
     }
-
+    // Handle requests for the MIME type of the data at the given URI.
     @Override
     public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)) {
@@ -50,8 +62,18 @@ public class ProviderModel extends ContentProvider {
         }
     }
 
+    /**
+     * Handle query requests from clients
+     * Use the uriMatcher to determine which model you are going to work on.
+     * @param uri Model Uri
+     * @param projection Columns that will be returned in the query
+     * @param selection Query conditions
+     * @param selectionArgs Conditions params
+     * @param sortOrder Order query by
+     * @return Cursor with the data result
+     */
     @Override
-    public Cursor query(
+        public Cursor query(
             @NonNull Uri uri,
             String[] projection,
             String selection,
@@ -83,7 +105,13 @@ public class ProviderModel extends ContentProvider {
         }
         return oCursor;
     }
-
+    /**
+     * Inserts a row into a table at the given URL.
+     * Use the uriMatcher to determine which model you are going to work on.
+     * @param uri Model Uri
+     * @param values Values of the new record that will be created
+     * @return Uri created to the new record
+     */
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase oSQLiteDB = oDatabaseHelper.getWritableDatabase();
@@ -109,7 +137,14 @@ public class ProviderModel extends ContentProvider {
                 throw new IllegalArgumentException("Bizagi: URI not supported => " + uri);
         }
     }
-
+    /**
+     * Deletes a row from a table at the given URL.
+     * Use the uriMatcher to determine which model you are going to work on.
+     * @param uri Model Uri
+     * @param selection Query conditions
+     * @param selectionArgs Conditions params
+     * @return Affected row id
+     */
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase oSQLiteDB = oDatabaseHelper.getWritableDatabase();
@@ -137,7 +172,14 @@ public class ProviderModel extends ContentProvider {
                 notifyChange(uri, null, false);
         return iRowAffected;
     }
-
+    /**
+     * Updates a row from a table at the given URL.
+     * Use the uriMatcher to determine which model you are going to work on.
+     * @param uri Model Uri
+     * @param selection Query conditions
+     * @param selectionArgs Conditions params
+     * @return Affected row id
+     */
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase oSQLiteDB = oDatabaseHelper.getWritableDatabase();

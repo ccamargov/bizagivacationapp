@@ -30,11 +30,22 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+/**
+ * Utility class. This class has functions that allow connectivity verifications.
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class NetworkUtilities {
 
     private static final String TAG = NetworkUtilities.class.getSimpleName();
     private static HttpClient mHttpClient;
 
+    /**
+     * Prepare apache http connection for future task's
+     */
     private static void prepareApacheHttpConnection() {
         if (mHttpClient == null) {
             mHttpClient = new DefaultHttpClient();
@@ -46,6 +57,9 @@ public class NetworkUtilities {
         }
     }
 
+    /**
+     * This class has functions that allow connectivity verifications.
+     */
     private static Thread performOnBackgroundThread(final Runnable runnable) {
         final Thread t = new Thread() {
             @Override
@@ -57,6 +71,12 @@ public class NetworkUtilities {
         return t;
     }
 
+    /**
+     * Run a server connection to check if the account credentials are correct.
+     * @param username Account username
+     * @param password Account password
+     * @return
+     */
     public static AuthenticateServerState authenticateOnServer(String username, String password,
                                                                Handler handler, final Context context) {
         AuthenticateServerState oAuthServerState = new AuthenticateServerState();
@@ -113,7 +133,7 @@ public class NetworkUtilities {
         }
         return oAuthServerState;
     }
-
+    // Sends the authentication result to the user (MainActivity)
     private static void sendResultToActivity(final Boolean result, final Handler handler,
                                              final Context context, final NetworkServiceError error,
                                              final User user) {
@@ -126,7 +146,7 @@ public class NetworkUtilities {
             }
         });
     }
-
+    // Start the authentication thread
     public static Thread attemptAuth(final String username,
                                      final String password, final Handler handler,
                                      final Context context) {
@@ -137,7 +157,7 @@ public class NetworkUtilities {
         };
         return NetworkUtilities.performOnBackgroundThread(runnable);
     }
-
+    // Check if the device is connected to the internet
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

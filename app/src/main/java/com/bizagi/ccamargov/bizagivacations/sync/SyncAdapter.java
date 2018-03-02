@@ -47,23 +47,37 @@ import java.util.Map;
 
 import com.bizagi.ccamargov.bizagivacations.R;
 
-/* Abbreviations:
-    * SRT => Send Request To...
-    * SDM => Sync Download Mode
-    * MCSE => Manage Custom Sync Errors
-*/
+/**
+ * An abstract implementation of SyncAdapter that generates a thread to invoke the synchronization
+ * operations that will be executed for the application.
+ * If a synchronization operation is already in progress when a synchronization request is received,
+ * an error will be returned to the new request and the existing request will be allowed to continue.
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ * @Abbreviations:
+ *      SRT => Send Request To...
+ *      SDM => Sync Download Mode
+ *      MCSE => Manage Custom Sync Errors
+ */
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static final String TAG = SyncAdapter.class.getSimpleName();
     private ContentResolver oResolver;
+    // User account
     private static Account oUserAccount;
     private Gson oGson = new Gson();
+    // Counter that stores the number of processes that have been executed
     private int iCountRequests;
+    // Check if there was an error by the server during synchronization
     private boolean bAnyServerError;
+    // Check if there was an error in the api_key during synchronization
     private boolean bTokenErrors;
+    // Store the total sync requests
     private int iTotalRequests;
-
+    // Columns of the RequestVacation model that will work during synchronization
     private static final String[] PROJECTION_REQUEST_VACATION = new String[] {
             BaseColumns._ID,
             ContractModel.RequestVacation.REMOTE_ID,
@@ -78,7 +92,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             ContractModel.RequestVacation.STATE,
             ContractModel.RequestVacation.UPDATE_STATE
     };
-
+    // Index of the columns that were previously defined to RequestVacation model
     private static final int REQUEST_VACATION_REMOTE_ID = 1;
     private static final int REQUEST_VACATION_PROCESS = 2;
     private static final int REQUEST_VACATION_ACTIVITY = 3;
@@ -91,11 +105,24 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int REQUEST_VACATION_STATE = 10;
     private static final int REQUEST_VACATION_UPDATE_STATE = 11;
 
+    /**
+     * Constructor class
+     * @param context Application context
+     * @param autoInitialize Auto-calculated value
+     */
     SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         oResolver = context.getContentResolver();
     }
 
+    /**
+     * Perform a sync for Bizagi account.
+     * @param account Bizagi Account
+     * @param extras Extra data to consider in the sync process
+     * @param authority Key value to check provider access
+     * @param provider Content provider that allows database transactions
+     * @param syncResult Synchronization result object
+     */
     @Override
     public void onPerformSync(Account account,
                               Bundle extras,
@@ -114,6 +141,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Static method that starts a manual sync
+     * @param context Application context
+     * @param typeSync Type of the Synchronization requested by the applicacion
+     */
     public static void syncNow(Context context, int typeSync) {
         Log.i(TAG, "Bizagi: Sync, Performing manual synchronization request");
         Bundle bundle = new Bundle();
@@ -124,6 +156,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 context.getString(R.string.provider_authority), bundle);
     }
 
+    /**
+     * Check if the user can authenticate on the server
+     * @return True if user can authenticate on the server
+     */
     private boolean checkServerUserStatus() {
         AccountManager oAccountManager = AccountManager.get(getContext());
         AuthenticateServerState oAuthServerState =
@@ -138,6 +174,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Execute all synchronization operations depending on the type of synchronization
+     * indicated by the application/user.
+     * @param type_sync Type of the Synchronization requested by the applicacion
+     * @param syncResult Syncronization result object
+     */
     private void startSync(int type_sync, final SyncResult syncResult) {
         Log.i(TAG, "Bizagi: Starting Sync type => " + type_sync);
         iCountRequests = 0;
@@ -158,6 +200,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Prepares the RequestVacation model records that have not been loaded/synchronized to the server.
+     */
     private void initRequestVacationUpdate() {
         Uri uri = ContractModel.RequestVacation.CONTENT_URI;
         String sQuerySelection = ContractModel.RequestVacation.UPDATE_STATE + " = ? AND "
@@ -168,7 +213,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         int iResults = oResolver.update(uri, oValues, sQuerySelection, oSelectionArgs);
         Log.i(TAG, "Bizagi: Sync, Records queued to update: " + iResults);
     }
-
+    /**
+     * Returns all records that have not been uploaded to the system
+     */
     private Cursor getRequestVacationDirtyRecords() {
         Uri uri = ContractModel.RequestVacation.CONTENT_URI;
         String sQuerySelection = ContractModel.RequestVacation.UPDATE_STATE + " = ? AND "
@@ -176,7 +223,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         String[] oSelectionArgs = new String[] {String.valueOf(Constants.RECORD_STATE_PENDING_SYNC),  String.valueOf(ContractModel.SYNC_STATE)};
         return oResolver.query(uri, PROJECTION_REQUEST_VACATION, sQuerySelection, oSelectionArgs, null);
     }
-
+    /**
+     *Update the status of the records that were successfully uploaded to the server.
+     * @param idLocal Local record that was successfully loaded
+     */
     private void processRemoteRequestVacationUpdate(int idLocal) {
         Uri uri = ContractModel.RequestVacation.CONTENT_URI;
         String sQuerySelection = ContractModel.RequestVacation.REMOTE_ID + " = ?";
@@ -187,6 +237,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         oResolver.update(uri, oValues, sQuerySelection, oSelectionArgs);
     }
 
+    /**
+     * Starts synchronization process remote -> local, to update the local RequestVacation model.
+     * Make a server request using the respective API, to return the information.
+     * @param api_key Api_key assigned to the user who is working on the application.
+     *                It is used to approve access to APIs registered in the server.
+     * @param syncResult Syncronization result object
+     */
     private void SRTRequestVacationsSDM(String api_key, final SyncResult syncResult) {
         VolleySingleton.getInstance(getContext()).addToRequestQueue(
                 new JsonObjectRequest(
@@ -224,7 +281,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 )
         );
     }
-
+    /**
+     * Starts synchronization process local -> remote, to upload the remote RequestVacation model.
+     * Make a server request using the respective API, to return the information.
+     * @param api_key Api_key assigned to the user who is working on the application.
+     *                It is used to approve access to APIs registered in the server.
+     */
     private void SRTRequestVacationSUM(String api_key) {
         initRequestVacationUpdate();
         final Cursor oCursor = getRequestVacationDirtyRecords();
@@ -296,6 +358,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         oCursor.close();
     }
 
+    /**
+     * Update the local model according to the changes in the remote model.
+     * @param request_vacations JSON Array that contains all records returned from the api for the RequestVacation model.
+     * @param syncResult Syncronization result object
+     */
     private void updateLocalDataRequestVacations(JSONArray request_vacations, SyncResult syncResult) {
         RequestVacation[] res = oGson.fromJson(request_vacations != null ? request_vacations.toString() : null,
                 RequestVacation[].class);
@@ -433,6 +500,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Notifies the user about the result of the synchronization, using broadcasts.
+     */
     private void notifyFullSyncResultToUser() {
         if (iTotalRequests == iCountRequests) {
             AccountManager oAccountManager = AccountManager.get(getContext());
@@ -450,6 +520,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Manage errors returned by the web service (Not by the server request - HTTP Errors).
+     * @param errors List of errors returned by the service, as JSONArray object.
+     */
     private void manageCustomSyncErrors(JSONArray errors) {
         if (!bTokenErrors) {
             NetworkServiceError[] oErrors = new Gson().fromJson(errors.toString(),

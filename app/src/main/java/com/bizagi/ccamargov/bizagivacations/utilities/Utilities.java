@@ -8,9 +8,22 @@ import com.bizagi.ccamargov.bizagivacations.provider.ContractModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Utility class. Auxiliary functions to be used by any component of the application
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
 
 public class Utilities {
-
+    /**
+     * Convert Cursor object to Json object.
+     * @param route Model route to handle
+     * @param c Cursor to handle
+     * @param api_key User api_key to add (Needed in synchronization objects)
+     * @return
+     */
     public static JSONObject CursorToJsonObject(String route, Cursor c, String api_key) {
         JSONObject jObject = new JSONObject();
         switch (route) {

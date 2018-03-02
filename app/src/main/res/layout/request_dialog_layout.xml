@@ -213,7 +213,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginEnd="1dp"
-            android:text="@string/action_confirm"
+            android:text="@string/action_approve"
             style="?android:attr/buttonBarButtonStyle" />
 
     </LinearLayout>
