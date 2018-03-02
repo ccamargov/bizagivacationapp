@@ -25,6 +25,15 @@ import com.bizagi.ccamargov.bizagivacations.utilities.Constants;
 import com.bizagi.ccamargov.bizagivacations.utilities.NetworkUtilities;
 import com.bizagi.ccamargov.bizagivacations.utilities.Validation;
 
+/**
+ * Login Activity. Controller that manages the actions between the views (Layouts- LoginActivity)
+ * and the model (Model and Database) of the Login process.
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class LoginActivity extends AccountAuthenticatorActivity implements View.OnClickListener {
 
     private final Handler oHandler = new Handler();
@@ -117,7 +126,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements View.
             oDialogProcess.dismiss();
         }
     }
-
+    // Return the server authentication result
     public void onAuthenticationResult(boolean result, NetworkServiceError error, User user) {
         hideProgress();
         if (result) {
@@ -137,6 +146,10 @@ public class LoginActivity extends AccountAuthenticatorActivity implements View.
         }
     }
 
+    /**
+     * Finish the login process and set up a new account for the Bizagi application, in the Android account management system,
+     * @param user User object returned from authentication process.
+     */
     private void finishLogin(User user) {
         final Account oAccountUser = new Account(sUsername, Constants.ACCOUNT_TYPE);
         if (bRequestNewAccount) {

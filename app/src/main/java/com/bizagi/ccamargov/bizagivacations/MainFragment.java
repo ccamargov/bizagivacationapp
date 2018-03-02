@@ -40,6 +40,15 @@ import com.bizagi.ccamargov.bizagivacations.utilities.NetworkUtilities;
 import com.bizagi.ccamargov.bizagivacations.utilities.RecyclerViewEmptySupport;
 import com.bizagi.ccamargov.bizagivacations.utilities.RequestListAdapter;
 
+/**
+ * Main Fragment. This fragment is contained in the main activity.
+ * Here is the list of vacation requests, and this is where the approval of these is managed.
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class MainFragment extends Fragment implements RequestListAdapter.OnItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -54,7 +63,7 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
 
     public MainFragment() {
     }
-
+    // Starts the CursorLoader to load the RequestVacation data
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(1, null, this);
@@ -65,13 +74,13 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
+    // Add local -> remote synchronization menu option
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main_fragment, menu);
     }
-
+    // Make local -> remote synchronization (Upload all pending data)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -114,6 +123,7 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
                 }
             }
         });
+        // Filter to discriminate Resquests
         oStateFilter = oView.findViewById(R.id.state_filter);
         String[] oFilterOptions = new String[]{
                 getResources().getString(R.string.all),
@@ -229,7 +239,7 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
     private void reloadRequestData() {
         getLoaderManager().restartLoader(1, null, this);
     }
-
+    // Dialog that show the request detail, and allow user to approve or reject request.
     private void createRequestDialog() {
         oAlertDialogRequest = null;
         LayoutInflater oInflater = LayoutInflater.from(getActivity());

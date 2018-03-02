@@ -5,9 +5,18 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * Utility class. Customized RecyclerView, which supports the handling of empty CardView's.
+ * This allows that if no record is returned, a Card_View with a personalized empty message is displayed.
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class RecyclerViewEmptySupport extends RecyclerView {
     private View emptyView;
-
+    // Check which CardView should show, according to the Adapter.
     private AdapterDataObserver emptyObserver = new AdapterDataObserver() {
 
         @Override

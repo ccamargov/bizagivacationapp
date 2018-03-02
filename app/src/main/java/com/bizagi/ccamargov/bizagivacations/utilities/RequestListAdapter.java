@@ -17,12 +17,20 @@ import com.bizagi.ccamargov.bizagivacations.R;
 import com.bizagi.ccamargov.bizagivacations.model.RequestVacation;
 import com.bizagi.ccamargov.bizagivacations.provider.ContractModel;
 
+/**
+ * Utility class. Custom adapter to show the list of RequestVacations records
+ * @author Camilo Camargo
+ * @author http://ccamargov.byethost18.com/
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.ViewHolder> {
 
     private final Context oContext;
     private Cursor oRequestData;
     private OnItemClickListener oListener;
-
+    // Set item click listener to open dialog and show detail of each item. Allow approve or reject request.
     public interface OnItemClickListener {
         void onClick(ViewHolder holder, int idLine);
     }
@@ -64,7 +72,7 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
                 .inflate(R.layout.request_vacation_list_item, parent, false);
         return new ViewHolder(v);
     }
-
+    // Depending on the status of the request, a CardView with a different style is handled.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         oRequestData.moveToPosition(position);
