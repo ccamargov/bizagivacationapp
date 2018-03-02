@@ -251,9 +251,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 String sTextExitTitle = getResources().getString(R.string.fa_sign_out);
                 TextView oTitleDialogExit = oDialogView.findViewById(R.id.dialog_title_exit);
                 Button oButtonExitConfirmDialog
-                        = oDialogView.findViewById(R.id.dialog_check_confirm);
+                        = oDialogView.findViewById(R.id.dialog_exit_confirm);
                 Button oButtonExitCancelDialog
-                        = oDialogView.findViewById(R.id.dialog_check_cancel);
+                        = oDialogView.findViewById(R.id.dialog_exit_cancel);
                 oTitleDialogExit.setTypeface(fontAwesomeFont);
                 oTitleDialogExit.setText(sTextExitTitle);
                 oAlertDialogBuilder = new AlertDialog.Builder(this);

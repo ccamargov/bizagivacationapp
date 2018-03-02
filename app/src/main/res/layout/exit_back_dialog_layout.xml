@@ -46,7 +46,7 @@
         style="?android:attr/buttonBarStyle" >
 
         <Button
-            android:id="@+id/dialog_check_cancel"
+            android:id="@+id/dialog_exit_cancel"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             style="?android:attr/buttonBarButtonStyle" />
 
         <Button
-            android:id="@+id/dialog_check_confirm"
+            android:id="@+id/dialog_exit_confirm"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"

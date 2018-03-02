@@ -24,6 +24,7 @@
     <string name="fa_warning">&#xf06a;</string>
     <string name="fa_danger">&#xf071;</string>
     <string name="fa_info">&#xf05a;</string>
+    <string name="fa_card_request">&#xf2bc;</string>
     <string-array name="nav_items">
         <item>Idioma</item>
         <item>Sincronizar</item>
@@ -46,6 +47,7 @@
     <string name="action_back">Volver</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_confirm">Confirmar</string>
+    <string name="action_approve">Aprobar</string>
     <string name="ask_exit_text">¿Está seguro de que desea salir?</string>
     <string name="img_description_action">Acción</string>
     <string name="ask_logout_text">¿Está seguro de que desea cerrar la sesión?</string>
@@ -57,4 +59,15 @@
     <string name="no_records">No hay registros</string>
     <string name="refresh_img">Refrescar registros</string>
     <string name="list_synced_updated">Lista sincronizada y actualizada</string>
+    <string name="request_detail">Información detallada de la solicitud de vacaciones</string>
+    <string name="employee_label">Empleado:</string>
+    <string name="process_label">Proceso:</string>
+    <string name="activity_label">Actividad:</string>
+    <string name="request_date_label">Request date:</string>
+    <string name="begin_date_label">Begin date:</string>
+    <string name="end_date_label">End date:</string>
+    <string name="last_vacation_date_label">Last vacation taken in:</string>
+    <string name="request_status_label">Request status:</string>
+    <string name="approved">Aprobado</string>
+    <string name="not_approved">Pendiente</string>
 </resources>
