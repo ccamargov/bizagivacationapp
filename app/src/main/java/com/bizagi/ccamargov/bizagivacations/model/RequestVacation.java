@@ -1,5 +1,14 @@
 package com.bizagi.ccamargov.bizagivacations.model;
 
+import android.content.Context;
+
+import com.bizagi.ccamargov.bizagivacations.R;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 public class RequestVacation {
 
     private int id;
@@ -11,6 +20,7 @@ public class RequestVacation {
     private String end_date;
     private String last_vacation_on;
     private boolean approved;
+    private Context context;
 
     public RequestVacation(int id, String process, String activity, String request_date, String employee, String begin_date, String end_date, String last_vacation_on, boolean approved) {
         this.id = id;
@@ -22,6 +32,15 @@ public class RequestVacation {
         this.end_date = end_date;
         this.last_vacation_on = last_vacation_on;
         this.approved = approved;
+    }
+
+    public RequestVacation(Context context, int id, String employee, String begin_date, String end_date, boolean approved) {
+        this.id = id;
+        this.employee = employee;
+        this.begin_date = begin_date;
+        this.end_date = end_date;
+        this.approved = approved;
+        this.context = context;
     }
 
     public int getId() {
@@ -94,5 +113,18 @@ public class RequestVacation {
 
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+
+    public String getRangeRequest() {
+        return this.begin_date + " " + this.context.getResources().getString(R.string.to) + " " +
+                this.end_date;
+    }
+    public String getDaysBetweenRequest() {
+        DateTimeFormatter oFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTime oDateBegin = DateTime.parse(this.begin_date, oFormatter);
+        DateTime oDateEnd = DateTime.parse(this.end_date, oFormatter);
+        int iCountDays = Days.daysBetween(oDateBegin.withTimeAtStartOfDay(),
+                oDateEnd.withTimeAtStartOfDay()).getDays();
+        return iCountDays + " " + this.context.getResources().getString(R.string.days_requested);
     }
 }

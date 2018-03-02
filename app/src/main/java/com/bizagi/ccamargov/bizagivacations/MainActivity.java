@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     private static final int DIALOG_LOGOUT = 2;
     private static final int DIALOG_EXIT_BY_BACK = 3;
     private static final int DIALOG_ALERT = 4;
+    private MainFragment oMainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     }
 
     private void loadMainFragment() {
-        MainFragment oMainFragment = new MainFragment();
+        oMainFragment = new MainFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_layout_container, oMainFragment);
         fragmentTransaction.commit();
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         @Override
         public void onReceive(Context context, Intent intent) {
             setSyncSubtitleNavItem(getLastSyncSubtitleNavItem());
-            hideProcessDialog();
+            resetSyncElements();
             Toast.makeText(context, getText(R.string.sync_server_failed_msg),
                     Toast.LENGTH_SHORT).show();
         }
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         @Override
         public void onReceive(Context context, Intent intent) {
             setSyncSubtitleNavItem(getLastSyncSubtitleNavItem());
-            hideProcessDialog();
+            resetSyncElements();
             Toast.makeText(context, getText(R.string.succesfull_sync),
                     Toast.LENGTH_SHORT).show();
         }
@@ -306,6 +307,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 oMessageAlertDialog.setText(bundle.getString(Constants.ALERT_DIALOG_MESSAGE_KEY));
                 break;
         }
+    }
+
+    private void resetSyncElements() {
+        hideProcessDialog();
+        oMainFragment.oImageRefresh.clearAnimation();
+        oMainFragment.isManualRefresh = false;
     }
 
     public void showAlertDialog(String type, String message) {

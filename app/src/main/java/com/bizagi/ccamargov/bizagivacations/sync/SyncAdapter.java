@@ -284,6 +284,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         for (RequestVacation e : expenseMap.values()) {
             Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, Scheduling insertion of => " + e.getId());
             ops.add(ContentProviderOperation.newInsert(ContractModel.RequestVacation.CONTENT_URI)
+                    .withValue(ContractModel.RequestVacation.REMOTE_ID,
+                            e.getId())
                     .withValue(ContractModel.RequestVacation.PROCESS,
                             e.getProcess())
                     .withValue(ContractModel.RequestVacation.ACTIVITY,

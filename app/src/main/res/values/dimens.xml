@@ -6,4 +6,5 @@
     <dimen name="dialog_header_height">100dp</dimen>
     <dimen name="dialog_header_icon_size">40sp</dimen>
     <dimen name="hr_normal_line">1dp</dimen>
+    <dimen name="bar_status_card">5dp</dimen>
 </resources>

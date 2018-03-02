@@ -49,5 +49,12 @@
     <string name="ask_exit_text">Are you sure you want to exit?</string>
     <string name="img_description_action">Action</string>
     <string name="ask_logout_text">Are you sure you want to log out?</string>
+    <string name="main_fragment_title">Vacations requests</string>
+    <string name="approval_state_img">Request status</string>
+    <string name="to">to</string>
+    <string name="days_requested">days requested</string>
+    <string name="no_records">No records</string>
+    <string name="refresh_img">Refresh records</string>
+    <string name="list_synced_updated">Synchronized and updated list</string>
 
 </resources>

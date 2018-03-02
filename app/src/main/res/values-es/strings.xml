@@ -50,4 +50,11 @@
     <string name="img_description_action">Acción</string>
     <string name="ask_logout_text">¿Está seguro de que desea cerrar la sesión?</string>
     <string name="no_net_to_login_sync">No es posible sincronizar los datos, verifica tu conexión a internet.</string>
+    <string name="main_fragment_title">Solicitudes de vacaciones</string>
+    <string name="approval_state_img">Estado de la solicitud</string>
+    <string name="to">a</string>
+    <string name="days_requested">días solicitados</string>
+    <string name="no_records">No hay registros</string>
+    <string name="refresh_img">Refrescar registros</string>
+    <string name="list_synced_updated">Lista sincronizada y actualizada</string>
 </resources>
