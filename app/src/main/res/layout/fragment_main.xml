@@ -22,6 +22,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="@string/main_fragment_title"
             android:textColor="@android:color/white"
             android:layout_alignParentTop="true"

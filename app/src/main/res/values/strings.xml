@@ -19,7 +19,6 @@
     <string name="fa_list_check">&#xf046;</string>
     <string name="fa_language">&#xf1ab;</string>
     <string name="fa_sign_out">&#xf08b;</string>
-    <string name="fa_check_square_o">&#xf046;</string>
     <string name="fa_success">&#xf058;</string>
     <string name="fa_warning">&#xf06a;</string>
     <string name="fa_danger">&#xf071;</string>
@@ -52,6 +51,7 @@
     <string name="ask_exit_text">Are you sure you want to exit?</string>
     <string name="img_description_action">Action</string>
     <string name="ask_logout_text">Are you sure you want to log out?</string>
+    <string name="no_net_to_login_sync">It is not possible to synchronize the data, check your internet connection.</string>
     <string name="main_fragment_title">Vacations requests</string>
     <string name="approval_state_img">Request status</string>
     <string name="to">to</string>
