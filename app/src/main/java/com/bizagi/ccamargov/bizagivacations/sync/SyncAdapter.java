@@ -6,6 +6,7 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
@@ -27,6 +28,7 @@ import com.bizagi.ccamargov.bizagivacations.model.RequestVacation;
 import com.bizagi.ccamargov.bizagivacations.provider.ContractModel;
 import com.bizagi.ccamargov.bizagivacations.utilities.Constants;
 import com.bizagi.ccamargov.bizagivacations.utilities.NetworkUtilities;
+import com.bizagi.ccamargov.bizagivacations.utilities.Utilities;
 import com.bizagi.ccamargov.bizagivacations.utilities.VolleySingleton;
 import com.google.gson.Gson;
 
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bizagi.ccamargov.bizagivacations.R;
 
@@ -60,7 +63,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private boolean bAnyServerError;
     private boolean bTokenErrors;
     private int iTotalRequests;
-    private int iSyncType;
 
     private static final String[] PROJECTION_REQUEST_VACATION = new String[] {
             BaseColumns._ID,
@@ -72,7 +74,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             ContractModel.RequestVacation.BEGIN_DATE,
             ContractModel.RequestVacation.END_DATE,
             ContractModel.RequestVacation.LAST_VACATION_ON,
-            ContractModel.RequestVacation.REQUEST_STATUS
+            ContractModel.RequestVacation.REQUEST_STATUS,
+            ContractModel.RequestVacation.STATE,
+            ContractModel.RequestVacation.UPDATE_STATE
     };
 
     private static final int REQUEST_VACATION_REMOTE_ID = 1;
@@ -84,6 +88,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int REQUEST_VACATION_END_DATE = 7;
     private static final int REQUEST_VACATION_LAST_VACATION_ON = 8;
     private static final int REQUEST_VACATION_IS_APPROVED = 9;
+    private static final int REQUEST_VACATION_STATE = 10;
+    private static final int REQUEST_VACATION_UPDATE_STATE = 11;
 
     SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -134,19 +140,51 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void startSync(int type_sync, final SyncResult syncResult) {
         Log.i(TAG, "Bizagi: Starting Sync type => " + type_sync);
-        iSyncType = type_sync;
         iCountRequests = 0;
         bAnyServerError = false;
         bTokenErrors = false;
         AccountManager oAccountManager = AccountManager.get(getContext());
         String sApiKey = oAccountManager.getUserData(oUserAccount,
                 Constants.PARAM_USER_API_KEY);
-        switch (iSyncType) {
+        switch (type_sync) {
             case Constants.DOWNLOAD_AND_UPLOAD_ALL_RECORDS_SYNC:
                 iTotalRequests = 1;
                 SRTRequestVacationsSDM(sApiKey, syncResult);
                 break;
+            case Constants.UPLOAD_REQUEST_RECORDS:
+                iTotalRequests = 1;
+                SRTRequestVacationSUM(sApiKey);
+                break;
         }
+    }
+
+    private void initRequestVacationUpdate() {
+        Uri uri = ContractModel.RequestVacation.CONTENT_URI;
+        String sQuerySelection = ContractModel.RequestVacation.UPDATE_STATE + " = ? AND "
+                + ContractModel.RequestVacation.STATE + " = ?";
+        String[] oSelectionArgs = new String[] {String.valueOf(Constants.RECORD_STATE_PENDING_SYNC), String.valueOf(ContractModel.OK_STATE)};
+        ContentValues oValues = new ContentValues();
+        oValues.put(ContractModel.RequestVacation.STATE, String.valueOf(ContractModel.SYNC_STATE));
+        int iResults = oResolver.update(uri, oValues, sQuerySelection, oSelectionArgs);
+        Log.i(TAG, "Bizagi: Sync, Records queued to update: " + iResults);
+    }
+
+    private Cursor getRequestVacationDirtyRecords() {
+        Uri uri = ContractModel.RequestVacation.CONTENT_URI;
+        String sQuerySelection = ContractModel.RequestVacation.UPDATE_STATE + " = ? AND "
+                + ContractModel.RequestVacation.STATE + " = ?";
+        String[] oSelectionArgs = new String[] {String.valueOf(Constants.RECORD_STATE_PENDING_SYNC),  String.valueOf(ContractModel.SYNC_STATE)};
+        return oResolver.query(uri, PROJECTION_REQUEST_VACATION, sQuerySelection, oSelectionArgs, null);
+    }
+
+    private void processRemoteRequestVacationUpdate(int idLocal) {
+        Uri uri = ContractModel.RequestVacation.CONTENT_URI;
+        String sQuerySelection = ContractModel.RequestVacation.REMOTE_ID + " = ?";
+        String[] oSelectionArgs = new String[] {String.valueOf(idLocal)};
+        ContentValues oValues = new ContentValues();
+        oValues.put(ContractModel.RequestVacation.UPDATE_STATE, String.valueOf(Constants.RECORD_STATE_SYNCED));
+        oValues.put(ContractModel.RequestVacation.STATE, String.valueOf(ContractModel.OK_STATE));
+        oResolver.update(uri, oValues, sQuerySelection, oSelectionArgs);
     }
 
     private void SRTRequestVacationsSDM(String api_key, final SyncResult syncResult) {
@@ -187,6 +225,77 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         );
     }
 
+    private void SRTRequestVacationSUM(String api_key) {
+        initRequestVacationUpdate();
+        final Cursor oCursor = getRequestVacationDirtyRecords();
+        Log.i(TAG, "Bizagi: Sync, Found " + oCursor.getCount() + " dirty records");
+        iCountRequests++;
+        if (oCursor.getCount() > 0) {
+            int iItemsWorking = oCursor.getCount();
+            while (oCursor.moveToNext()) {
+                final int iRequestId = oCursor.getInt(REQUEST_VACATION_REMOTE_ID);
+                final int finalIItemsWorking = iItemsWorking;
+                VolleySingleton.getInstance(getContext()).addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.POST,
+                                Constants.POST_REQUEST_VACATIONS_UPDATE_URL,
+                                Utilities.CursorToJsonObject(ContractModel.ROUT_REQUEST_VACATIONS
+                                        , oCursor, api_key),
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            response.getJSONArray(Constants.REQUEST_VACATION_UPDATED);
+                                            processRemoteRequestVacationUpdate(iRequestId);
+                                        } catch (JSONException e) {
+                                            try {
+                                                JSONArray errors = response.getJSONArray(Constants.ERRORS);
+                                                manageCustomSyncErrors(errors);
+                                            } catch (JSONException ignored) {
+                                                bAnyServerError = true;
+                                            }
+                                        }
+                                        if (finalIItemsWorking == oCursor.getPosition()) {
+                                            notifyFullSyncResultToUser();
+                                        }
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        bAnyServerError = true;
+                                        if (finalIItemsWorking == oCursor.getPosition()) {
+                                            notifyFullSyncResultToUser();
+                                        }
+                                        Log.d(TAG, "Bizagi: Sync (makeRemoteSync), Exception => " +
+                                                error.getLocalizedMessage());
+                                    }
+                                }
+                        ) {
+                            @Override
+                            public Map<String, String> getHeaders() {
+                                Map<String, String> headers = new HashMap<>();
+                                headers.put("Content-Type", "application/json; charset=utf-8");
+                                headers.put("Accept", "application/json");
+                                return headers;
+                            }
+
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8" + getParamsEncoding();
+                            }
+                        }
+                );
+                iItemsWorking++;
+            }
+
+        } else {
+            notifyFullSyncResultToUser();
+            Log.i(TAG, "Bizagi: Sync, Updating no required");
+        }
+        oCursor.close();
+    }
+
     private void updateLocalDataRequestVacations(JSONArray request_vacations, SyncResult syncResult) {
         RequestVacation[] res = oGson.fromJson(request_vacations != null ? request_vacations.toString() : null,
                 RequestVacation[].class);
@@ -211,68 +320,74 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             String sEndDate;
             String sLastVacationOn;
             int isApproved;
+            int iRecordState;
+            int iUpdateState;
             while (oCursor.moveToNext()) {
                 syncResult.stats.numEntries++;
-                iRemoteEmpId = oCursor.getString(REQUEST_VACATION_REMOTE_ID);
-                sProcess = oCursor.getString(REQUEST_VACATION_PROCESS);
-                sActivity = oCursor.getString(REQUEST_VACATION_ACTIVITY);
-                sRequestDate = oCursor.getString(REQUEST_VACATION_REQUEST_DATE);
-                sEmployee = oCursor.getString(REQUEST_VACATION_EMPLOYEE);
-                sBeginDate = oCursor.getString(REQUEST_VACATION_BEGIN_DATE);
-                sEndDate = oCursor.getString(REQUEST_VACATION_END_DATE);
-                sLastVacationOn = oCursor.getString(REQUEST_VACATION_LAST_VACATION_ON);
-                isApproved = oCursor.getInt(REQUEST_VACATION_IS_APPROVED);
-                RequestVacation match = expenseMap.get(iRemoteEmpId);
-                if (match != null) {
-                    expenseMap.remove(iRemoteEmpId);
-                    Uri existingUri = ContractModel.RequestVacation.CONTENT_URI.buildUpon()
-                            .appendPath(iRemoteEmpId).build();
-                    boolean bCheckPR = match.getProcess() != null &&
-                            !match.getProcess().equals(sProcess);
-                    boolean bCheckAC = match.getActivity() != null &&
-                            !match.getActivity().equals(sActivity);
-                    boolean bCheckRD = match.getRequestDate() != null &&
-                            !match.getRequestDate().equals(sRequestDate);
-                    boolean bCheckEM = match.getEmployee() != null &&
-                            !match.getEmployee().equals(sEmployee);
-                    boolean bCheckBD = match.getBeginDate() != null &&
-                            !match.getBeginDate().equals(sBeginDate);
-                    boolean bCheckED = match.getEndDate() != null &&
-                            !match.getEndDate().equals(sEndDate);
-                    boolean bCheckLV = match.getlastVacationOn() != null &&
-                            !match.getlastVacationOn().equals(sLastVacationOn);
-                    boolean bCheckIA = match.getStatusRequest() != isApproved;
-                    if (bCheckPR || bCheckAC || bCheckRD || bCheckEM || bCheckBD
-                            || bCheckED || bCheckLV || bCheckIA) {
-                        Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, Scheduling update for => " + existingUri);
-                        ops.add(ContentProviderOperation.newUpdate(existingUri)
-                                .withValue(ContractModel.RequestVacation.PROCESS,
-                                        match.getProcess())
-                                .withValue(ContractModel.RequestVacation.ACTIVITY,
-                                        match.getActivity())
-                                .withValue(ContractModel.RequestVacation.REQUEST_DATE,
-                                        match.getRequestDate())
-                                .withValue(ContractModel.RequestVacation.EMPLOYEE,
-                                        match.getEmployee())
-                                .withValue(ContractModel.RequestVacation.BEGIN_DATE,
-                                        match.getBeginDate())
-                                .withValue(ContractModel.RequestVacation.END_DATE,
-                                        match.getEndDate())
-                                .withValue(ContractModel.RequestVacation.LAST_VACATION_ON,
-                                        match.getlastVacationOn())
-                                .withValue(ContractModel.RequestVacation.REQUEST_STATUS,
-                                        match.getStatusRequest())
-                                .build());
-                        syncResult.stats.numUpdates++;
+                iRecordState = oCursor.getInt(REQUEST_VACATION_STATE);
+                iUpdateState = oCursor.getInt(REQUEST_VACATION_UPDATE_STATE);
+                if (iUpdateState == Constants.RECORD_STATE_SYNCED && iRecordState == ContractModel.OK_STATE) {
+                    iRemoteEmpId = oCursor.getString(REQUEST_VACATION_REMOTE_ID);
+                    sProcess = oCursor.getString(REQUEST_VACATION_PROCESS);
+                    sActivity = oCursor.getString(REQUEST_VACATION_ACTIVITY);
+                    sRequestDate = oCursor.getString(REQUEST_VACATION_REQUEST_DATE);
+                    sEmployee = oCursor.getString(REQUEST_VACATION_EMPLOYEE);
+                    sBeginDate = oCursor.getString(REQUEST_VACATION_BEGIN_DATE);
+                    sEndDate = oCursor.getString(REQUEST_VACATION_END_DATE);
+                    sLastVacationOn = oCursor.getString(REQUEST_VACATION_LAST_VACATION_ON);
+                    isApproved = oCursor.getInt(REQUEST_VACATION_IS_APPROVED);
+                    RequestVacation match = expenseMap.get(iRemoteEmpId);
+                    if (match != null) {
+                        expenseMap.remove(iRemoteEmpId);
+                        Uri existingUri = ContractModel.RequestVacation.CONTENT_URI.buildUpon()
+                                .appendPath(iRemoteEmpId).build();
+                        boolean bCheckPR = match.getProcess() != null &&
+                                !match.getProcess().equals(sProcess);
+                        boolean bCheckAC = match.getActivity() != null &&
+                                !match.getActivity().equals(sActivity);
+                        boolean bCheckRD = match.getRequestDate() != null &&
+                                !match.getRequestDate().equals(sRequestDate);
+                        boolean bCheckEM = match.getEmployee() != null &&
+                                !match.getEmployee().equals(sEmployee);
+                        boolean bCheckBD = match.getBeginDate() != null &&
+                                !match.getBeginDate().equals(sBeginDate);
+                        boolean bCheckED = match.getEndDate() != null &&
+                                !match.getEndDate().equals(sEndDate);
+                        boolean bCheckLV = match.getlastVacationOn() != null &&
+                                !match.getlastVacationOn().equals(sLastVacationOn);
+                        boolean bCheckIA = match.getStatusRequest() != isApproved;
+                        if (bCheckPR || bCheckAC || bCheckRD || bCheckEM || bCheckBD
+                                || bCheckED || bCheckLV || bCheckIA) {
+                            Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, Scheduling update for => " + existingUri);
+                            ops.add(ContentProviderOperation.newUpdate(existingUri)
+                                    .withValue(ContractModel.RequestVacation.PROCESS,
+                                            match.getProcess())
+                                    .withValue(ContractModel.RequestVacation.ACTIVITY,
+                                            match.getActivity())
+                                    .withValue(ContractModel.RequestVacation.REQUEST_DATE,
+                                            match.getRequestDate())
+                                    .withValue(ContractModel.RequestVacation.EMPLOYEE,
+                                            match.getEmployee())
+                                    .withValue(ContractModel.RequestVacation.BEGIN_DATE,
+                                            match.getBeginDate())
+                                    .withValue(ContractModel.RequestVacation.END_DATE,
+                                            match.getEndDate())
+                                    .withValue(ContractModel.RequestVacation.LAST_VACATION_ON,
+                                            match.getlastVacationOn())
+                                    .withValue(ContractModel.RequestVacation.REQUEST_STATUS,
+                                            match.getStatusRequest())
+                                    .build());
+                            syncResult.stats.numUpdates++;
+                        } else {
+                            Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, No changes to record => " + existingUri);
+                        }
                     } else {
-                        Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, No changes to record => " + existingUri);
+                        Uri deleteUri = ContractModel.RequestVacation.CONTENT_URI.buildUpon()
+                                .appendPath(iRemoteEmpId).build();
+                        Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, Scheduling removal of => " + deleteUri);
+                        ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                        syncResult.stats.numDeletes++;
                     }
-                } else {
-                    Uri deleteUri = ContractModel.RequestVacation.CONTENT_URI.buildUpon()
-                            .appendPath(iRemoteEmpId).build();
-                    Log.i(TAG, "Bizagi: Sync REQUEST VACATIONS, Scheduling removal of => " + deleteUri);
-                    ops.add(ContentProviderOperation.newDelete(deleteUri).build());
-                    syncResult.stats.numDeletes++;
                 }
             }
             oCursor.close();

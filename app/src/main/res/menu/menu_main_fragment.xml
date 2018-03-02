@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/upload_schedule_data"
+        android:icon="@drawable/ic_upload_data"
+        android:orderInCategory="10"
+        android:title="@string/upload_data"
+        app:showAsAction="ifRoom" >
+    </item>
+</menu>

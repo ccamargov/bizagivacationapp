@@ -16,6 +16,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -60,11 +63,29 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_main_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.upload_schedule_data:
+                oMainActivity.showSyncProcessDialog();
+                SyncAdapter.syncNow(getActivity(), Constants.UPLOAD_REQUEST_RECORDS);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View oView = inflater.inflate(R.layout.fragment_main, container, false);
+        setHasOptionsMenu(true);
         oMainActivity = (MainActivity) getActivity();
-
         CardView oEmptyCard = oView.findViewById(R.id.empty_cardview);
         RecyclerViewEmptySupport oRequestVacationsList = oView.findViewById(R.id.requests_list);
         oRequestVacationsList.setEmptyView(oEmptyCard);
@@ -187,11 +208,13 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
                 if (iCurrentRequestRemoteId != -1) {
                     ContentValues oValues = new ContentValues();
                     oValues.put(ContractModel.RequestVacation.REQUEST_STATUS, RequestVacation.APPROVED_REQUEST);
+                    oValues.put(ContractModel.RequestVacation.UPDATE_STATE, Constants.RECORD_STATE_PENDING_SYNC);
                     getActivity().getContentResolver()
                             .update(ContractModel.RequestVacation.CONTENT_URI, oValues,
                                     ContractModel.RequestVacation.REMOTE_ID + " = ?",
                                     new String[] {String.valueOf(iCurrentRequestRemoteId)});
                     oFinalRequestAlterDialog.dismiss();
+                    SyncAdapter.syncNow(getActivity(), Constants.UPLOAD_REQUEST_RECORDS);
                 }
             }
 
@@ -202,11 +225,13 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
                 if (iCurrentRequestRemoteId != -1) {
                     ContentValues oValues = new ContentValues();
                     oValues.put(ContractModel.RequestVacation.REQUEST_STATUS, RequestVacation.REJECTED_REQUEST);
+                    oValues.put(ContractModel.RequestVacation.UPDATE_STATE, Constants.RECORD_STATE_PENDING_SYNC);
                     getActivity().getContentResolver()
                             .update(ContractModel.RequestVacation.CONTENT_URI, oValues,
                                     ContractModel.RequestVacation.REMOTE_ID + " = ?",
                                     new String[] {String.valueOf(iCurrentRequestRemoteId)});
                     oFinalRequestAlterDialog.dismiss();
+                    SyncAdapter.syncNow(getActivity(), Constants.UPLOAD_REQUEST_RECORDS);
                 }
             }
         });

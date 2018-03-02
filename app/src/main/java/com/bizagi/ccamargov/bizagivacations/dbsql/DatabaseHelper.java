@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.bizagi.ccamargov.bizagivacations.provider.ContractModel;
+import com.bizagi.ccamargov.bizagivacations.utilities.Constants;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -42,7 +43,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ContractModel.RequestVacation.END_DATE + " TEXT, " +
                 ContractModel.RequestVacation.LAST_VACATION_ON + " TEXT, " +
                 ContractModel.RequestVacation.REQUEST_STATUS + " INTEGER, " +
-                ContractModel.RequestVacation.REMOTE_ID + " INTEGER UNIQUE)";
+                ContractModel.RequestVacation.REMOTE_ID + " INTEGER UNIQUE," +
+                ContractModel.RequestVacation.STATE + " INTEGER NOT NULL DEFAULT " + ContractModel.OK_STATE + "," +
+                ContractModel.RequestVacation.UPDATE_STATE + " INTEGER NOT NULL DEFAULT " + Constants.RECORD_STATE_SYNCED + ")";
         database.execSQL(sQuery);
     }
 

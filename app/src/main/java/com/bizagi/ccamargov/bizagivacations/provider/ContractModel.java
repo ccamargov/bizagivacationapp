@@ -25,7 +25,10 @@ public class ContractModel {
         String END_DATE = "end_date";
         String LAST_VACATION_ON = "last_vacation_on";
         String REQUEST_STATUS = "approved";
+        String STATE = "state";
         String REMOTE_ID = "id_remote";
+        String UPDATE_STATE = "is_updated";
+
     }
 
     public static class RequestVacation implements RequestVacationCols {
