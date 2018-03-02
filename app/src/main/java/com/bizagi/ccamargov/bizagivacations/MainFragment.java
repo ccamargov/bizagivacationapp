@@ -24,8 +24,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,7 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
     private AlertDialog oAlertDialogRequest;
     private View oDialogViewRequest;
     private static int iCurrentRequestRemoteId = -1;
+    private Spinner oStateFilter;
 
     public MainFragment() {
     }
@@ -110,6 +114,26 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
                 }
             }
         });
+        oStateFilter = oView.findViewById(R.id.state_filter);
+        String[] oFilterOptions = new String[]{
+                getResources().getString(R.string.all),
+                getResources().getString(R.string.pending),
+                getResources().getString(R.string.approved),
+                getResources().getString(R.string.rejected)
+        };
+        ArrayAdapter<String> oFilterAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1, oFilterOptions);
+        oStateFilter.setAdapter(oFilterAdapter);
+        oStateFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView,
+                                       View selectedItemView, int position, long id) {
+                reloadRequestData();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
         createRequestDialog();
         return oView;
     }
@@ -117,8 +141,27 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return new CursorLoader(getActivity(), ContractModel.RequestVacation.CONTENT_URI,
-                null, null, null, null);
+        String sFilterSelected = (String) oStateFilter.getSelectedItem();
+        int iFilterState = -1;
+        if (sFilterSelected.equals(getResources().getString(R.string.pending))) {
+            iFilterState = RequestVacation.PENDING_REQUEST;
+        } else if (sFilterSelected.equals(getResources().getString(R.string.approved))) {
+            iFilterState = RequestVacation.APPROVED_REQUEST;
+        } else if (sFilterSelected.equals(getResources().getString(R.string.rejected))) {
+            iFilterState = RequestVacation.REJECTED_REQUEST;
+        }
+        if (iFilterState != -1) {
+            String sQuerySelection = ContractModel.ROUT_REQUEST_VACATIONS + "." +
+                    ContractModel.RequestVacation.REQUEST_STATUS + " = ?";
+            String oShiftSelectionArgs[] = {
+                    String.valueOf(iFilterState)
+            };
+            return new CursorLoader(getActivity(), ContractModel.RequestVacation.CONTENT_URI,
+                    null, sQuerySelection, oShiftSelectionArgs, null);
+        } else {
+            return new CursorLoader(getActivity(), ContractModel.RequestVacation.CONTENT_URI,
+                    null, null, null, null);
+        }
     }
 
     @Override
@@ -181,6 +224,10 @@ public class MainFragment extends Fragment implements RequestListAdapter.OnItemC
             oApproved.setText(getResources().getString(R.string.rejected));
         }
         oAlertDialogRequest.show();
+    }
+
+    private void reloadRequestData() {
+        getLoaderManager().restartLoader(1, null, this);
     }
 
     private void createRequestDialog() {

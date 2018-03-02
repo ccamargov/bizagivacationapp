@@ -10,11 +10,19 @@
     android:paddingTop="10dp"
     android:weightSum="1">
 
+    <Spinner
+        android:id="@+id/state_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white"
+        android:spinnerMode="dropdown"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="10dp"
         android:background="@color/colorSecondary"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView

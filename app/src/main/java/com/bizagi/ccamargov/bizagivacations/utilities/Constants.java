@@ -21,7 +21,7 @@ public class Constants {
     public static final String PARAM_USER_API_KEY = "api_key";
     public static final String PARAM_LAST_SYNC = "last_sync";
     public static final String PARAM_FULL_NAME = "user_full_name";
-    private static final String IP_HOST_SERVER = "http://204.232.187.235:9082";
+    private static final String IP_HOST_SERVER = "https://bizagivacations.herokuapp.com";
     public static final String LOGIN_SERVER_URL
             = IP_HOST_SERVER + "/api/v1/users/login_user.json";
     public static final String GET_REQUEST_VACATIONS_URL
