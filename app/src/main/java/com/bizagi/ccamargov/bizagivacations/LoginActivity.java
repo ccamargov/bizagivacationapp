@@ -143,6 +143,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements View.
             final Bundle oExtraData = new Bundle();
             oExtraData.putString(Constants.PARAM_USER_REMOTE_ID, String.valueOf(user.getRemoteId()));
             oExtraData.putString(Constants.PARAM_USER_API_KEY, user.getApiKey());
+            oExtraData.putString(Constants.PARAM_FULL_NAME, user.getFullName());
             oExtraData.putString(Constants.PARAM_LAST_SYNC, getString(R.string.no_synced));
             if (oAccountManager.addAccountExplicitly(oAccountUser, sPassword, oExtraData)) {
                 ContentResolver.setIsSyncable(oAccountUser,
@@ -166,6 +167,9 @@ public class LoginActivity extends AccountAuthenticatorActivity implements View.
         setAccountAuthenticatorResult(oIntentAccount.getExtras());
         setResult(RESULT_OK, oIntentAccount);
         finish();
+        Intent oIntentMain = new Intent(this, MainActivity.class);
+        oIntentMain.putExtra(Constants.PARAM_FROM_TO, Constants.VALUE_FROM_LOGIN_TO_HOME);
+        startActivity(oIntentMain);
     }
 
 }

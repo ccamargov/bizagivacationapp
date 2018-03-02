@@ -10,8 +10,66 @@
     <string name="login_no_internet_detected">You must be connected to internet to sign in</string>
     <string name="login_server_problem">A problem has occurred during authentication with the server. Contact your system administrator.</string>
     <string name="no_synced">No synchronized</string>
+    <string name="request_login">Please log-in</string>
     <string name="app_name">Bizagi Vacations</string>
     <string name="label_auth_token">BizagiVacations</string>
     <string name="provider_authority">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="account_type">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="signature">Developed By Camilo Camargo</string>
     <string name="fa_list_check">&#xf046;</string>
+    <string name="fa_language">&#xf1ab;</string>
+    <string name="fa_sign_out">&#xf08b;</string>
+    <string name="fa_check_square_o">&#xf046;</string>
+    <string name="fa_success">&#xf058;</string>
+    <string name="fa_warning">&#xf06a;</string>
+    <string name="fa_danger">&#xf071;</string>
+    <string name="fa_info">&#xf05a;</string>
+    <string name="fa_card_request">&#xf2bc;</string>
+    <string-array name="nav_items">
+        <item>Language</item>
+        <item>Sync up</item>
+        <item>Logout</item>
+    </string-array>
+    <string-array name="lang_drop_items_title">
+        <item>Spanish</item>
+        <item>English</item>
+    </string-array>
+    <string-array name="lang_drop_items_subtitle">
+        <item>ES</item>
+        <item>EN</item>
+    </string-array>
+    <string name="navigation_drawer_open">Open menu</string>
+    <string name="navigation_drawer_close">Close menu</string>
+    <string name="sync_server_failed_msg">There are problems with synchronization.</string>
+    <string name="succesfull_sync">Successful synchronization</string>
+    <string name="synced">Synchronized</string>
+    <string name="syncing">Synchronizing&#8230;</string>
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_approve">Approve</string>
+    <string name="action_reject">Reject</string>
+    <string name="ask_exit_text">Are you sure you want to exit?</string>
+    <string name="img_description_action">Action</string>
+    <string name="ask_logout_text">Are you sure you want to log out?</string>
+    <string name="main_fragment_title">Vacations requests</string>
+    <string name="approval_state_img">Request status</string>
+    <string name="to">to</string>
+    <string name="days_requested">days requested</string>
+    <string name="no_records">No records</string>
+    <string name="refresh_img">Refresh records</string>
+    <string name="list_synced_updated">Synchronized and updated list</string>
+    <string name="request_detail">Detailed request vacations information</string>
+    <string name="employee_label">Employee:</string>
+    <string name="process_label">Process:</string>
+    <string name="activity_label">Activity:</string>
+    <string name="request_date_label">Request date:</string>
+    <string name="begin_date_label">Start date:</string>
+    <string name="end_date_label">End date:</string>
+    <string name="last_vacation_date_label">Last vacation taken in:</string>
+    <string name="request_status_label">Request status:</string>
+    <string name="approved">Approved</string>
+    <string name="pending">Pending</string>
+    <string name="rejected">Rejected</string>
+    <string name="upload_data">Upload data</string>
 </resources>

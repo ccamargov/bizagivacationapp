@@ -10,8 +10,67 @@
     <string name="login_no_internet_detected">Debes estar conectado para iniciar sesión</string>
     <string name="login_server_problem">Ha ocurrido un problema durante la autenticación con el servidor. Porfavor contacte con el administrador.</string>
     <string name="no_synced">No sincronizado</string>
+    <string name="request_login">Porfavor inicie sesión</string>
     <string name="app_name">Bizagi Vacations</string>
     <string name="label_auth_token">BizagiVacations</string>
     <string name="provider_authority">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="account_type">com.bizagi.ccamargov.bizagivacations</string>
+    <string name="signature">Desarrollado por Camilo Camargo</string>
     <string name="fa_list_check">&#xf046;</string>
+    <string name="fa_language">&#xf1ab;</string>
+    <string name="fa_sign_out">&#xf08b;</string>
+    <string name="fa_check_square_o">&#xf046;</string>
+    <string name="fa_success">&#xf058;</string>
+    <string name="fa_warning">&#xf06a;</string>
+    <string name="fa_danger">&#xf071;</string>
+    <string name="fa_info">&#xf05a;</string>
+    <string name="fa_card_request">&#xf2bc;</string>
+    <string-array name="nav_items">
+        <item>Idioma</item>
+        <item>Sincronizar</item>
+        <item>Cerrar sesión</item>
+    </string-array>
+    <string-array name="lang_drop_items_title">
+        <item>Español</item>
+        <item>Ingles</item>
+    </string-array>
+    <string-array name="lang_drop_items_subtitle">
+        <item>ES</item>
+        <item>EN</item>
+    </string-array>
+    <string name="navigation_drawer_open">Abrir menu</string>
+    <string name="navigation_drawer_close">Cerrar menu</string>
+    <string name="sync_server_failed_msg">Han ocurrido problemas durante la sincronización.</string>
+    <string name="succesfull_sync">Sincronización exitosa</string>
+    <string name="synced">Sincronizado</string>
+    <string name="syncing">Sincronizando&#8230;</string>
+    <string name="action_back">Volver</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_confirm">Confirmar</string>
+    <string name="action_approve">Aprobar</string>
+    <string name="action_reject">Rechazar</string>
+    <string name="ask_exit_text">¿Está seguro de que desea salir?</string>
+    <string name="img_description_action">Acción</string>
+    <string name="ask_logout_text">¿Está seguro de que desea cerrar la sesión?</string>
+    <string name="no_net_to_login_sync">No es posible sincronizar los datos, verifica tu conexión a internet.</string>
+    <string name="main_fragment_title">Solicitudes de vacaciones</string>
+    <string name="approval_state_img">Estado de la solicitud</string>
+    <string name="to">a</string>
+    <string name="days_requested">días solicitados</string>
+    <string name="no_records">No hay registros</string>
+    <string name="refresh_img">Refrescar registros</string>
+    <string name="list_synced_updated">Lista sincronizada y actualizada</string>
+    <string name="request_detail">Información detallada de la solicitud de vacaciones</string>
+    <string name="employee_label">Empleado:</string>
+    <string name="process_label">Proceso:</string>
+    <string name="activity_label">Actividad:</string>
+    <string name="request_date_label">Request date:</string>
+    <string name="begin_date_label">Begin date:</string>
+    <string name="end_date_label">End date:</string>
+    <string name="last_vacation_date_label">Last vacation taken in:</string>
+    <string name="request_status_label">Request status:</string>
+    <string name="approved">Aprobado</string>
+    <string name="pending">Pendiente</string>
+    <string name="rejected">Rechazado</string>
+    <string name="upload_data">Subir información</string>
 </resources>
